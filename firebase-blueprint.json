@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Session": {
+      "title": "Session",
+      "description": "A user's WhatsApp bot session containing their phone number, state, and history of Trust Scores.",
+      "type": "object",
+      "properties": {
+        "phoneNumber": {
+          "type": "string",
+          "description": "The user's WhatsApp phone number (used as document ID)."
+        },
+        "state": {
+          "type": "string",
+          "enum": ["ONBOARDING", "READY"],
+          "description": "The current state of the user in the bot flow."
+        },
+        "scores": {
+          "type": "array",
+          "description": "History of Trust Scores generated for this user.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "score": {
+                "type": "number",
+                "description": "The Trust Score (0-100)"
+              },
+              "date": {
+                "type": "string",
+                "format": "date-time",
+                "description": "ISO timestamp of when the score was generated"
+              },
+              "details": {
+                "type": "object",
+                "description": "The full JSON output from Gemini",
+                "properties": {
+                  "explanation": { "type": "string" },
+                  "riskLevel": { "type": "string" },
+                  "estimatedLoanAmount": { "type": "string" },
+                  "savingsTip": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["phoneNumber", "state", "scores"]
+    }
+  },
+  "firestore": {
+    "/sessions/{phoneNumber}": {
+      "schema": {
+        "$ref": "#/entities/Session"
+      },
+      "description": "Stores user sessions keyed by their WhatsApp phone number."
+    }
+  }
+}

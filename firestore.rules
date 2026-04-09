@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: sessions
+    // Document ID: phoneNumber (string)
+    // Fields:
+    //   - phoneNumber: string (required) - The user's WhatsApp phone number
+    //   - state: string (required) - 'ONBOARDING' or 'READY'
+    //   - scores: list (required) - Array of score objects
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      // In a real app, verify admin custom claims or an admins collection
+      return isAuthenticated() && request.auth.token.email == "blessedemoefe1122334455@gmail.com";
+    }
+
+    // Rules
+    match /sessions/{phoneNumber} {
+      // For the MVP, only the backend (Cloud Functions/Admin SDK) should write to this collection.
+      // The admin dashboard can read it if the user is an admin.
+      allow read: if isAdmin();
+      allow write: if false; // Only Cloud Functions (which bypass rules) can write
+    }
+  }
+}
