@@ -222,21 +222,21 @@ app.get('/api/pdf/:phone', (req, res) => {
 
   const doc = new PDFDocument();
   res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', \`attachment; filename=TrustScore_\${phone}.pdf\`);
+  res.setHeader('Content-Disposition', `attachment; filename=TrustScore_${phone}.pdf`);
   
   doc.pipe(res);
   
   doc.fontSize(25).text('TrustScore Report', { align: 'center' });
   doc.moveDown();
-  doc.fontSize(16).text(\`Phone Number: \${phone}\`);
-  doc.text(\`Date: \${new Date().toLocaleDateString()}\`);
+  doc.fontSize(16).text(`Phone Number: ${phone}`);
+  doc.text(`Date: ${new Date().toLocaleDateString()}`);
   doc.moveDown();
   
-  doc.fontSize(20).text(\`Trust Score: \${latestScore.score} / 100\`, { align: 'center' });
+  doc.fontSize(20).text(`Trust Score: ${latestScore.score} / 100`, { align: 'center' });
   doc.moveDown();
   
-  doc.fontSize(14).text(\`Risk Level: \${latestScore.riskLevel}\`);
-  doc.text(\`Estimated Comfortable Loan: \${latestScore.estimatedLoanAmount}\`);
+  doc.fontSize(14).text(`Risk Level: ${latestScore.riskLevel}`);
+  doc.text(`Estimated Comfortable Loan: ${latestScore.estimatedLoanAmount}`);
   doc.moveDown();
   
   doc.fontSize(12).text('Analysis:', { underline: true });
@@ -272,7 +272,7 @@ async function startServer() {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(\`Server running on http://localhost:\${PORT}\`);
+    console.log(`Server running on http://localhost:${PORT}`);
   });
 }
 

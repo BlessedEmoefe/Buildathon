@@ -100,7 +100,7 @@ exports.whatsappWebhook = functions.https.onRequest(async (req, res) => {
           } else {
             replyText = "Here is your progress: 📈\n\n" + session.scores.slice(-5).map((s, i) => {
               const trend = i === 0 ? '🆕' : (s.score >= session.scores[i-1].score ? '⬆️' : '⬇️');
-              return \`Date: \${new Date(s.date).toLocaleDateString()} | Score: \${s.score} \${trend}\`;
+              return `Date: ${new Date(s.date).toLocaleDateString()} | Score: ${s.score} ${trend}`;
             }).join('\n');
           }
         } else if (msgLower === 'get savings plan') {
@@ -161,12 +161,12 @@ exports.whatsappWebhook = functions.https.onRequest(async (req, res) => {
                   details: result
                 });
 
-                replyText = \`*Your Trust Score: \${result.score}/100* 🎯\n\n\` +
-                            \`*Risk Level:* \${result.riskLevel}\n\` +
-                            \`*Estimated Loan:* \${result.estimatedLoanAmount}\n\n\` +
-                            \`📝 *Analysis:* \${result.explanation}\n\n\` +
-                            \`💡 *Tip:* \${result.savingsTip}\n\n\` +
-                            \`Reply 'Share' to get a PDF report.\`;
+                replyText = `*Your Trust Score: ${result.score}/100* 🎯\n\n` +
+                            `*Risk Level:* ${result.riskLevel}\n` +
+                            `*Estimated Loan:* ${result.estimatedLoanAmount}\n\n` +
+                            `📝 *Analysis:* ${result.explanation}\n\n` +
+                            `💡 *Tip:* ${result.savingsTip}\n\n` +
+                            `Reply 'Share' to get a PDF report.`;
               } catch (e) {
                 console.error("Failed to parse Gemini response", e);
                 replyText = "Sorry, I couldn't understand those transactions. Please try sending them again clearly! 🙏";
@@ -180,7 +180,7 @@ exports.whatsappWebhook = functions.https.onRequest(async (req, res) => {
 
         // 5. Send Reply via WhatsApp API
         // await sendWhatsAppMessage(from, replyText);
-        console.log(\`Reply to \${from}: \${replyText}\`);
+        console.log(`Reply to ${from}: ${replyText}`);
       }
       res.sendStatus(200);
     } else {
@@ -209,21 +209,21 @@ exports.generatePdfReport = functions.https.onRequest(async (req, res) => {
 
   const doc = new PDFDocument();
   res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', \`attachment; filename=TrustScore_\${phone}.pdf\`);
+  res.setHeader('Content-Disposition', `attachment; filename=TrustScore_${phone}.pdf`);
   
   doc.pipe(res);
   
   doc.fontSize(25).text('TrustScore Report', { align: 'center' });
   doc.moveDown();
-  doc.fontSize(16).text(\`Phone Number: \${phone}\`);
-  doc.text(\`Date: \${new Date().toLocaleDateString()}\`);
+  doc.fontSize(16).text(`Phone Number: ${phone}`);
+  doc.text(`Date: ${new Date().toLocaleDateString()}`);
   doc.moveDown();
   
-  doc.fontSize(20).text(\`Trust Score: \${latestScore.score} / 100\`, { align: 'center' });
+  doc.fontSize(20).text(`Trust Score: ${latestScore.score} / 100`, { align: 'center' });
   doc.moveDown();
   
-  doc.fontSize(14).text(\`Risk Level: \${latestScore.riskLevel}\`);
-  doc.text(\`Estimated Comfortable Loan: \${latestScore.estimatedLoanAmount}\`);
+  doc.fontSize(14).text(`Risk Level: ${latestScore.riskLevel}`);
+  doc.text(`Estimated Comfortable Loan: ${latestScore.estimatedLoanAmount}`);
   doc.moveDown();
   
   doc.fontSize(12).text('Analysis:', { underline: true });
